@@ -7,9 +7,20 @@ url=https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF/resolve/f86cb2c
 expected_bytes=1117320768
 expected_sha=cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046
 
+sha256() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$1" | awk '{print $1}'
+  elif command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$1" | awk '{print $1}'
+  else
+    echo "sha256sum or shasum is required for model verification" >&2
+    return 1
+  fi
+}
+
 verify() {
   test "$(wc -c < "$1" | tr -d ' ')" = "$expected_bytes" &&
-    test "$(shasum -a 256 "$1" | awk '{print $1}')" = "$expected_sha"
+    test "$(sha256 "$1")" = "$expected_sha"
 }
 
 if test "${1-}" = --verify-file; then

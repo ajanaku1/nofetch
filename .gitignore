@@ -1,0 +1,10 @@
+model/*
+!model/.gitkeep
+*.gguf
+.tools/
+build/
+evidence/
+submission.json
+*.log
+tmp/
+node_modules/

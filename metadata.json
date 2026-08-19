@@ -1,0 +1,25 @@
+{
+  "team_id": "nofetch",
+  "domain": "coding_assistants",
+  "language_scope": ["en"],
+  "african_alpha_claim": true,
+  "budget_laptop_claim": true,
+  "submitter": {"name": "Bambam", "email": "mykdahunsi@gmail.com", "github_handle": "ajanaku1"},
+  "cross_disciplinary_pairing": {
+    "discipline": "computer science education",
+    "load_bearing": true,
+    "description": "Offline, safety-constrained debugging assistance for students and developers using budget laptops with unreliable connectivity."
+  },
+  "test_prompts": [
+    {"prompt_id": "tp_001", "prompt": "Diagnose an empty process-level API_PORT overriding API_PORT=3000 in .env.local. Provide one safe local action and verification command without downloading anything."},
+    {"prompt_id": "tp_002", "prompt": "Diagnose ModuleNotFoundError when the system Python runs the script but requests is installed in .venv. Provide one safe local action and verification command without fetching packages."}
+  ],
+  "model": {
+    "name": "Qwen2.5-Coder-1.5B-Instruct-Q4_K_M",
+    "runtime": "llama.cpp",
+    "quantization": "GGUF Q4_K_M",
+    "parameters_estimate": "1.8B",
+    "packaging": "binary_bundle"
+  },
+  "_runtime": {"model_path": "model/qwen2.5-coder-1.5b-instruct-q4_k_m.gguf"}
+}

@@ -1,0 +1,3 @@
+Use only supplied evidence and the TRUSTED PLAN. Never claim execution.
+Return exactly one JSON string containing only a finding consistent with the finding hint.
+Do not mention actions, commands, URLs, backticks, or extra labels.

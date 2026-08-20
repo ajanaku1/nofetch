@@ -57,11 +57,14 @@ rg -F 'command -v shasum' download_model.sh
 printf '%s\n' '#!/bin/sh' 'printf sha256sum >> "$TRACE"' 'printf "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046  %s\\n" "$1"' > "$bin/sha256sum"
 printf '%s\n' '#!/bin/sh' 'printf shasum >> "$TRACE"' 'printf "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046  %s\\n" "$3"' > "$bin/shasum"
 printf '%s\n' '#!/bin/sh' 'printf "1117320768 %s\\n" "$2"' > "$bin/wc"
+ln -s "$(command -v dirname)" "$bin/dirname"
+ln -s "$(command -v tr)" "$bin/tr"
+ln -s "$(command -v awk)" "$bin/awk"
 chmod +x "$bin/sha256sum" "$bin/shasum" "$bin/wc"
-PATH="$bin:/usr/bin:/bin" TRACE="$trace" ./download_model.sh --verify-file "$fixture"
+PATH="$bin" TRACE="$trace" ./download_model.sh --verify-file "$fixture"
 test "$(cat "$trace")" = sha256sum
 rm "$bin/sha256sum"
 : > "$trace"
-PATH="$bin:/usr/bin:/bin" TRACE="$trace" ./download_model.sh --verify-file "$fixture"
+PATH="$bin" TRACE="$trace" ./download_model.sh --verify-file "$fixture"
 test "$(cat "$trace")" = shasum
 echo gate1-verify=PASS

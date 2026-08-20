@@ -15,8 +15,10 @@ const output = `${good}\nLOCAL ACTION: Unset or correct the API_PORT process ove
 const fallback = 'FINDING: API_PORT empty process override masks the local env-file value';
 const model = JSON.stringify(finding);
 const schema = { type: 'string', minLength: 1, maxLength: 240 };
+const warning = 'NoFetch warning: model unavailable; using trusted plan\n';
 const reply = content => JSON.stringify({ choices: [{ message: { content } }] });
 const failed = result => { assert.notEqual(result.code, 0); assert.equal(result.out, ''); assert.match(result.err, /^NoFetch failed:/); };
+const hardFailed = (result, reason) => { failed(result); assert.equal(result.err, `NoFetch failed: ${reason}\n`); };
 function run(args) { return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [cli, ...args]);
     let out = '', err = '';
@@ -56,30 +58,31 @@ test('sends the sealed llama.cpp request and prints a trusted four-line plan', a
     assert.match(body.messages[1].content, /LOCKED ACTION: Unset or correct the API_PORT process override/);
   } finally { await local.close(); } });
 test('refuses unsafe hosts, CLI misuse, and malformed input', async () => {
-  for (const host of ['http://localhost:8080', 'https://127.0.0.1:8080', 'http://127.0.0.1:8080/x', 'http://127.0.0.1:8080/?x', 'http://u@127.0.0.1:8080', 'http://128.0.0.1:8080', 'http://127.0.0.999:8080']) failed(await invoke(host));
-  for (const value of [{ ...input, x: 1 }, { ...input, task: '' }, { ...input, evidence: [] }, { ...input, evidence: ['x'.repeat(2049)] }, { ...input, scenario: 'x'.repeat(8193) }]) failed(await invoke('http://127.0.0.1:9', value));
-  failed(await invoke('http://127.0.0.1:9', input, ['--input', 'x']));
+  for (const host of ['http://localhost:8080', 'https://127.0.0.1:8080', 'http://127.0.0.1:8080/x', 'http://127.0.0.1:8080/?x', 'http://u@127.0.0.1:8080', 'http://128.0.0.1:8080', 'http://127.0.0.999:8080']) hardFailed(await invoke(host), 'host rejected');
+  for (const value of [{ ...input, x: 1 }, { ...input, task: '' }, { ...input, evidence: [] }, { ...input, evidence: ['x'.repeat(2049)] }, { ...input, scenario: 'x'.repeat(8193) }]) hardFailed(await invoke('http://127.0.0.1:9', value), 'invalid input');
+  hardFailed(await invoke('http://127.0.0.1:9', input, ['--input', 'x']), 'invalid arguments');
+  hardFailed(await run([]), 'invalid arguments');
 });
-test('uses aligned narration, falls back from unsafe or unaligned narration, and rejects malformed responses', async () => {
+test('uses aligned narration and falls back from unsafe, unaligned, or malformed responses', async () => {
   for (const [content, expected] of [[model, output], [JSON.stringify('unrelated'), `${fallback}\n${output.split('\n').slice(1).join('\n')}`], [JSON.stringify('API_PORT pip install'), `${fallback}\n${output.split('\n').slice(1).join('\n')}`]]) {
     const local = await server(reply(content)); try { assert.equal((await invoke(local.host)).out, `${expected}\n`); } finally { await local.close(); }
   }
   for (const [body, status] of [['no', 500], ['{', 200], [JSON.stringify({ choices: [] }), 200], [JSON.stringify({ choices: { 0: { message: { content: model } }, length: 1 } }), 200], [reply('bad'), 200], [reply(JSON.stringify({ finding })), 200], [reply(JSON.stringify(1)), 200], [reply(JSON.stringify('')), 200], [reply(JSON.stringify('API_PORT\nmultiline')), 200], [reply(JSON.stringify('x'.repeat(241))), 200]]) {
     const local = await server(body, status);
-    try { failed(await invoke(local.host)); } finally { await local.close(); }
+    try { assert.deepEqual(await invoke(local.host), { code: 0, out: `${output}\n`, err: warning }); } finally { await local.close(); }
   }
   const redirect = createServer((request, response) => { response.writeHead(302, { location: 'http://127.0.0.1/' }); response.end(); }); await new Promise(resolve => redirect.listen(0, '127.0.0.1', resolve));
-  try { failed(await invoke(`http://127.0.0.1:${redirect.address().port}`)); } finally { await new Promise(resolve => redirect.close(resolve)); }
+  try { assert.deepEqual(await invoke(`http://127.0.0.1:${redirect.address().port}`), { code: 0, out: `${output}\n`, err: warning }); } finally { await new Promise(resolve => redirect.close(resolve)); }
 });
 test('uses IPv6 loopback when supported', async context => {
   let local; try { local = await server(reply(model), 200, '::1'); } catch { context.skip('::1 unavailable'); return; }
   try { assert.equal((await invoke(local.host)).code, 0); } finally { await local.close(); }
 });
-test('rejects whitespace-only input before HTTP and malformed finding', async () => {
+test('rejects whitespace-only input before HTTP and falls back from malformed finding', async () => {
   const local = await server(reply(model));
   try {
     for (const value of [{ ...input, scenario: '   ' }, { ...input, task: '\t' }, { ...input, evidence: ['\n'] }]) failed(await invoke(local.host, value));
     assert.equal(local.count(), 0);
   } finally { await local.close(); }
-  const malformed = await server(reply(JSON.stringify('   '))); try { failed(await invoke(malformed.host)); } finally { await malformed.close(); }
+  const malformed = await server(reply(JSON.stringify('   '))); try { assert.deepEqual(await invoke(malformed.host), { code: 0, out: `${output}\n`, err: warning }); } finally { await malformed.close(); }
 });

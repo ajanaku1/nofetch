@@ -21,6 +21,25 @@ test('missing-required-tool recognizes a Node version prerequisite', () => {
   const plan = planCase(make(['Node.js version >=20 is required', 'current runtime Node.js 18 is absent from requirement', 'approved local tools inventory: none']));
   assert.equal(plan.ruleId, 'missing-required-tool'); assert.equal(plan.fetchStatus, 'needs-approval'); assert.match(plan.finding, /Node/i);
 });
+test('matches the six sealed held-out English evidence forms', () => {
+  const heldout = [
+    ['environment-override', 'Identify the likely local fix.', ['.env.local contains PORT=3000', 'config loader reads .env', 'process environment contains PORT=', 'application reports invalid port']],
+    ['existing-venv-package', 'Diagnose interpreter selection.', ['python points to /usr/bin/python3', 'python -m pip show requests reports not found', '.venv/bin/python -m pip show requests reports installed']],
+    ['reachable-reflog-commit', 'Choose a non-destructive recovery path.', ['git reflog shows commit abc123 as HEAD@{3}', 'git show abc123 displays the expected change', 'working tree is clean']],
+    ['unquoted-spaced-path', 'Diagnose the shell failure.', ['target path is /work/My Notes/input.txt', 'script expands $target unquoted', 'error says too many arguments']],
+    ['missing-required-tool', 'Decide acquisition status.', ['command -v shellcheck returns no result', '/usr/local/bin has no shellcheck', 'approved local tools inventory has no shellcheck', 'policy names shellcheck explicitly']],
+    ['missing-required-repository', 'Decide whether obtaining a prerequisite is allowed.', ['expected repository path does not exist', 'approved workspace inventory has no acme-api worktree', 'task names repository acme-api and revision release-4']]
+  ];
+  for (const [ruleId, task, evidence] of heldout) assert.equal(planCase(make(evidence, task)).ruleId, ruleId);
+});
+test('ignores clearly unrelated noise but not relevant unmatched evidence', () => {
+  const evidence = [...cases[0][1], 'some unrelated log line'];
+  assert.equal(planCase(make(evidence)).ruleId, 'environment-override');
+  assert.equal(planCase(make([...evidence, 'API_PORT was cleared but the failure persists'])).ruleId, 'manual-review');
+  const toolEvidence = [...cases[4][1], 'some unrelated log line'];
+  assert.equal(planCase(make(toolEvidence)).ruleId, 'missing-required-tool');
+  assert.equal(planCase(make([...toolEvidence, 'shellcheck is actually present locally'])).ruleId, 'manual-review');
+});
 test('near-miss evidence does not match a verified rule', () => {
   const inputs = [
     ['config/.env.local: API_PORT=4100', 'process environment API_PORT=9000', 'effective config: invalid port'],

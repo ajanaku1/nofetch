@@ -10,19 +10,25 @@ import { readFile } from 'node:fs/promises';
 const metadata = JSON.parse(await readFile('metadata.json'));
 assert.deepEqual(metadata, {
   team_id: 'nofetch', domain: 'coding_assistants', language_scope: ['en'],
-  african_alpha_claim: true, budget_laptop_claim: true,
+  african_alpha_claim: false, budget_laptop_claim: true,
   submitter: { name: 'Bambam', email: 'mykdahunsi@gmail.com', github_handle: 'ajanaku1' },
   cross_disciplinary_pairing: { discipline: 'computer science education', load_bearing: true, description: 'Offline, safety-constrained debugging assistance for students and developers using budget laptops with unreliable connectivity.' },
   test_prompts: [
-    { prompt_id: 'tp_001', prompt: 'Diagnose an empty process-level API_PORT overriding API_PORT=3000 in .env.local. Provide one safe local action and verification command without downloading anything.' },
-    { prompt_id: 'tp_002', prompt: 'Diagnose ModuleNotFoundError when the system Python runs the script but requests is installed in .venv. Provide one safe local action and verification command without fetching packages.' }
+    { prompt_id: 'tp_001', prompt: 'Evidence: .env.local sets API_PORT=3000; the process environment contains an empty API_PORT; the application reports an invalid port. Return exactly four lines and no other text:\nFINDING: <one local cause>\nLOCAL ACTION: <one safe local action>\nVERIFY: <one local check>\nFETCH STATUS: no-fetch\nReplace the angle-bracket text. Do not download or install anything.' },
+    { prompt_id: 'tp_002', prompt: 'Evidence: system Python raises ModuleNotFoundError for requests; .venv/bin/python reports requests is already installed. Return exactly four lines and no other text:\nFINDING: <one local cause>\nLOCAL ACTION: <use the existing virtual environment>\nVERIFY: <one local check>\nFETCH STATUS: no-fetch\nReplace the angle-bracket text. Do not run pip install.' }
   ],
   model: { name: 'Qwen2.5-Coder-1.5B-Instruct-Q4_K_M', runtime: 'llama.cpp', quantization: 'GGUF Q4_K_M', parameters_estimate: '1.8B', packaging: 'binary_bundle' },
   _runtime: { model_path: 'model/qwen2.5-coder-1.5b-instruct-q4_k_m.gguf' }
 });
 const readme = await readFile('README.md', 'utf8');
 const report = await readFile('REPORT.md', 'utf8');
+const systemPrompt = await readFile('baseline/system-prompt.txt', 'utf8');
 assert.match(readme, /FINDING:.*\nLOCAL ACTION:.*\nVERIFY:.*\nFETCH STATUS:/);
+assert.match(readme, /client therefore sends\n`baseline\/system-prompt\.txt` as the system message on every request/);
+assert.doesNotMatch(readme, /--system-prompt(?:-file)?/);
+assert.match(systemPrompt, /FINDING:.*\nLOCAL ACTION:.*\nVERIFY:.*\nFETCH STATUS:/);
+assert.match(systemPrompt, /Use no-fetch unless the user proves a named prerequisite is absent from both PATH and local inventory/);
+assert.doesNotMatch(systemPrompt, /https?:|download Node from/i);
 assert.match(report, /not Standard Laptop evidence/i);
 assert.match(report, /accuracy.*pending/i);
 assert.match(report, /not a fine-tuned checkpoint/i);

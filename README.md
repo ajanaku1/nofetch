@@ -16,7 +16,8 @@ FETCH STATUS: <no-fetch or needs-approval>
 
 The deterministic playbook fixes the action, verification, and fetch status; the
 local model can only narrate the finding. NoFetch does not perform downloads, remote
-inference, or shared inference.
+inference, or shared inference. If model narration is unavailable or malformed, the
+client prints the trusted playbook plan and emits a warning instead of losing the plan.
 
 ## Layout and offline boundary
 
@@ -56,7 +57,9 @@ cmake --build "$runtime_root/build" --target llama-server -j4
 ```
 
 The pinned source exposes each listed CMake option. The build enables only the local
-CPU server; its `--offline` mode prevents runtime network access.
+CPU server; its `--offline` mode prevents runtime network access. This pinned server
+does not expose a global system-prompt flag. The Node client therefore sends
+`baseline/system-prompt.txt` as the system message on every request.
 
 ## Local inference
 
@@ -83,12 +86,13 @@ node --test app/nofetch.test.mjs app/playbook.test.mjs
 ./verify.sh
 ```
 
-For a later Gate 1 smoke only, use profiler source commit
-`ac2e137dca65ea3b09d997774f17dd8907b489fb` with participant mode and
-`--skip-accuracy`. Do not install or resolve the accuracy stack for this package.
+Profiler work stays isolated from this public package. Development measurements use
+profiler source commit `ac2e137dca65ea3b09d997774f17dd8907b489fb`; they do not
+install profiler or accuracy dependencies into NoFetch itself.
 
 ## Evidence limits
 
-The published development measurement is Darwin x86_64 compatibility evidence only.
-It is not an official score or Standard Laptop result; Ubuntu 22.04 x86-64, 4 vCPU,
-8 GB DDR4, integrated-graphics validation and accuracy evaluation remain pending.
+Darwin x86_64 development runs measured local compatibility and a 50-sample ARC-Easy
+score of 0.66 (`acc_norm`, seed 42). These are not official scores or Standard Laptop
+results. Ubuntu 22.04 x86-64, 4 vCPU, 8 GB DDR4, integrated-graphics validation and
+the official audit remain pending.

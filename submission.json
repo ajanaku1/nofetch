@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.1.0",
+  "profiler_version": "adtc-profiler 0.1.0",
+  "submission": {
+    "team_id": "nofetch",
+    "domain": "coding_assistants",
+    "language_scope": [
+      "en"
+    ],
+    "african_alpha_claim": false,
+    "budget_laptop_claim": true,
+    "submitter": {
+      "name": "Bambam",
+      "email": "mykdahunsi@gmail.com",
+      "github_handle": "ajanaku1"
+    },
+    "cross_disciplinary_pairing": {
+      "discipline": "computer science education",
+      "load_bearing": true,
+      "description": "Offline, safety-constrained debugging assistance for students and developers using budget laptops with unreliable connectivity."
+    },
+    "test_prompts": [
+      {
+        "prompt_id": "tp_001",
+        "prompt": "Evidence: .env.local sets API_PORT=3000; the process environment contains an empty API_PORT; the application reports an invalid port. Return exactly four lines and no other text:\nFINDING: <one local cause>\nLOCAL ACTION: <one safe local action>\nVERIFY: <one local check>\nFETCH STATUS: no-fetch\nReplace the angle-bracket text. Do not download or install anything."
+      },
+      {
+        "prompt_id": "tp_002",
+        "prompt": "Evidence: system Python raises ModuleNotFoundError for requests; .venv/bin/python reports requests is already installed. Return exactly four lines and no other text:\nFINDING: <one local cause>\nLOCAL ACTION: <use the existing virtual environment>\nVERIFY: <one local check>\nFETCH STATUS: no-fetch\nReplace the angle-bracket text. Do not run pip install."
+      }
+    ],
+    "model": {
+      "name": "Qwen2.5-Coder-1.5B-Instruct-Q4_K_M",
+      "runtime": "llama.cpp",
+      "quantization": "GGUF Q4_K_M",
+      "parameters_estimate": "1.8B",
+      "packaging": "binary_bundle"
+    }
+  },
+  "environment": {
+    "measured_on": "participant_laptop",
+    "cpu_model": "Intel(R) Core(TM) i5-8257U CPU @ 1.40GHz",
+    "ram_gb": 16.0,
+    "gpu": "none",
+    "os": "macOS-15.7.9-x86_64-i386-64bit"
+  },
+  "throughput": {
+    "tokens_per_second_generation": 21.62,
+    "first_token_latency_ms": 5280.19,
+    "prompt_tokens": 512,
+    "generated_tokens": 128
+  },
+  "memory": {
+    "peak_rss_mb": 1868.49,
+    "steady_state_rss_mb": 1773.84,
+    "peak_vms_mb": 68017.71
+  },
+  "accuracy": [
+    {
+      "benchmark": "arc_easy",
+      "dataset_version": "lm-eval-harness",
+      "language": "en",
+      "samples": 50,
+      "score": 0.66,
+      "metric": "acc_norm"
+    }
+  ],
+  "cpu_thermal": {
+    "cpu_percent_p99": 71.3,
+    "core_temp_c_peak": null,
+    "throttled": false
+  },
+  "reproducibility": {
+    "git_commit_sha": "0aa5890c937e",
+    "docker_image_digest": "unknown",
+    "random_seed": 42
+  },
+  "model_info": {
+    "params_count": 1777088000,
+    "context_length": 32768,
+    "architecture": "qwen2",
+    "claimed_params_estimate": "1.8B",
+    "params_match": true
+  }
+}

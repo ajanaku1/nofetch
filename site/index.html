@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="NoFetch is a CPU-only coding assistant that inspects local evidence before asking for downloads.">
+    <meta name="theme-color" content="#07110d">
+    <meta property="og:title" content="NoFetch — Repair locally">
+    <meta property="og:description" content="Repair locally. Fetch only with evidence.">
+    <meta property="og:image" content="assets/og-image.png">
+    <title>NoFetch — Repair locally</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="NoFetch home">
+        <img src="assets/logo-light.svg" alt="" width="32" height="32">
+        <span>NoFetch</span>
+      </a>
+      <nav aria-label="Primary">
+        <a href="#how-it-works">How it works</a>
+        <a href="#proof">Proof</a>
+        <a class="nav-source" href="https://github.com/ajanaku1/nofetch">View source <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span></span> Offline coding assistant</p>
+          <h1 id="hero-title">Repair locally.<br><em>Fetch only with evidence.</em></h1>
+          <p class="hero-intro">NoFetch inspects what is already on your machine, recommends one reversible action, and keeps the network locked until absence is proven.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="https://github.com/ajanaku1/nofetch">Explore the source <span aria-hidden="true">↗</span></a>
+            <a class="text-link" href="#how-it-works">See the local loop <span aria-hidden="true">↓</span></a>
+          </div>
+          <div class="hero-footnote">
+            <span>Qwen2.5-Coder 1.5B</span>
+            <span>llama.cpp</span>
+            <span>CPU only</span>
+          </div>
+        </div>
+
+        <figure class="terminal" aria-label="Example NoFetch diagnosis">
+          <div class="terminal-bar">
+            <div class="terminal-lights" aria-hidden="true"><i></i><i></i><i></i></div>
+            <span>nofetch · offline loopback</span>
+            <b>NO NETWORK</b>
+          </div>
+          <div class="terminal-body">
+            <p class="terminal-label">SUPPLIED EVIDENCE</p>
+            <p><span class="prompt">›</span> .env.local → API_PORT=3000</p>
+            <p><span class="prompt">›</span> process env → API_PORT=</p>
+            <div class="terminal-rule"></div>
+            <p class="terminal-label">TRUSTED PLAN</p>
+            <p><span class="line-key">FINDING</span> Empty process override masks the local value.</p>
+            <p><span class="line-key">ACTION</span> Unset or correct the process override.</p>
+            <p><span class="line-key">VERIFY</span> Confirm the effective port and start.</p>
+            <p class="terminal-status"><span class="status-dot"></span> FETCH STATUS: NO-FETCH</p>
+          </div>
+          <figcaption>One real case. One local correction. Zero downloads.</figcaption>
+        </figure>
+
+        <svg class="hero-route" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M53 14H20a7 7 0 0 0-7 7v23a7 7 0 0 0 7 7h19a7 7 0 0 0 7-7v-7a7 7 0 0 0-7-7H27"/>
+          <path d="m34 22-8 8 8 8"/>
+        </svg>
+      </section>
+
+      <section class="manifesto" aria-label="NoFetch principle">
+        <p>Most assistants default outward.</p>
+        <p>NoFetch turns the route <em>back to your machine.</em></p>
+      </section>
+
+      <section class="workflow section" id="how-it-works" aria-labelledby="workflow-title">
+        <div class="section-heading">
+          <p class="eyebrow"><span></span> The local loop</p>
+          <h2 id="workflow-title">Restraint is part of the product.</h2>
+          <p>Every answer follows a fixed sequence designed to preserve your data, your machine, and your ability to undo.</p>
+        </div>
+        <ol class="workflow-list">
+          <li>
+            <span class="step-number">01</span>
+            <div><h3>Inspect locally</h3><p>Read only the evidence you supply. Check configuration, environments, PATH, history, and state before suggesting acquisition.</p></div>
+          </li>
+          <li>
+            <span class="step-number">02</span>
+            <div><h3>Repair reversibly</h3><p>Return one narrow local action. No speculative installs, no privilege escalation, no destructive reset.</p></div>
+          </li>
+          <li>
+            <span class="step-number">03</span>
+            <div><h3>Verify the result</h3><p>Name the concrete check that proves the repair worked. A plausible answer is not enough.</p></div>
+          </li>
+          <li>
+            <span class="step-number">04</span>
+            <div><h3>Fetch with evidence</h3><p>Only proven absence can open the gate—and a human still approves the network action.</p></div>
+          </li>
+        </ol>
+      </section>
+
+      <section class="cases section" aria-labelledby="cases-title">
+        <div class="section-heading compact">
+          <p class="eyebrow"><span></span> Three judge moments</p>
+          <h2 id="cases-title">Local when possible.<br>Approval when necessary.</h2>
+        </div>
+        <div class="case-grid">
+          <article>
+            <div class="case-top"><span>01 / ENVIRONMENT</span><b>NO-FETCH</b></div>
+            <h3>Package exists in <code>.venv</code></h3>
+            <p>Use the existing interpreter.</p>
+            <div class="blocked"><span>BLOCKED</span> pip install</div>
+          </article>
+          <article>
+            <div class="case-top"><span>02 / RECOVERY</span><b>NO-FETCH</b></div>
+            <h3>Commit survives in reflog</h3>
+            <p>Create a recovery branch.</p>
+            <div class="blocked"><span>BLOCKED</span> reset --hard</div>
+          </article>
+          <article>
+            <div class="case-top"><span>03 / ABSENCE</span><b class="approval">APPROVAL</b></div>
+            <h3>Tool absent from local inventory</h3>
+            <p>Ask before acquiring anything.</p>
+            <div class="blocked"><span>BLOCKED</span> silent download</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="proof section" id="proof" aria-labelledby="proof-title">
+        <div class="proof-intro">
+          <p class="eyebrow"><span></span> Measured, not mocked</p>
+          <h2 id="proof-title">Runs where the work happens.</h2>
+          <p>The submitted Q4_K_M model was measured with the official participant profiler across 50 ARC-Easy samples.</p>
+          <a class="text-link light-link" href="https://github.com/ajanaku1/nofetch">Inspect the evidence <span aria-hidden="true">↗</span></a>
+        </div>
+        <dl class="metrics">
+          <div><dt>Generation speed</dt><dd>21.62 <small>tok/s</small></dd></div>
+          <div><dt>Peak memory</dt><dd>1.87 <small>GB</small></dd></div>
+          <div><dt>ARC-Easy acc_norm</dt><dd>0.66</dd></div>
+        </dl>
+      </section>
+
+      <section class="closing section" aria-labelledby="closing-title">
+        <img src="assets/logo.svg" alt="" width="88" height="88">
+        <div>
+          <p class="eyebrow"><span></span> Start from what you have</p>
+          <h2 id="closing-title">The shortest path forward<br>may already be on disk.</h2>
+        </div>
+        <div class="command-block">
+          <code>git clone https://github.com/ajanaku1/nofetch.git</code>
+          <button type="button" data-copy-command data-command="git clone https://github.com/ajanaku1/nofetch.git">
+            <span>Copy command</span>
+          </button>
+          <span class="copy-status" data-copy-status aria-live="polite"></span>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand footer-brand" href="#top"><img src="assets/logo.svg" alt="" width="26" height="26"><span>NoFetch</span></a>
+      <p>Built for developers whose bandwidth and machines deserve respect.</p>
+      <a href="https://github.com/ajanaku1/nofetch">GitHub <span aria-hidden="true">↗</span></a>
+    </footer>
+  </body>
+</html>
